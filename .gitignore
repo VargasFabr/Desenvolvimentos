@@ -1,0 +1,12 @@
+# Arquivos temporários
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+
+# Arquivos de backup
+*.bak
+*.backup
