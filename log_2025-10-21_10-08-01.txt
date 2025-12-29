@@ -1,0 +1,53 @@
+Início: 2025-10-21 10:08:01.548203
+Erro ao buscar dados da tabela building: ERRO:  relação "public.building" não existe
+LINE 2:         SELECT MAX(updated_at) FROM public. building
+                                            ^
+
+Erro ao buscar dados da tabela building: invalid input syntax for type timestamp: "2"
+LINE 3:                         WHERE updated_at > '2'
+                                                   ^
+
+Nenhum dado para inserir em building.
+Tempo: 0:00:00.497351 
+
+Erro ao buscar dados da tabela city: ERRO:  relação "public.city" não existe
+LINE 2:         SELECT MAX(updated_at) FROM public. city
+                                            ^
+
+Erro ao buscar dados da tabela city: invalid input syntax for type timestamp: "2"
+LINE 3:                         WHERE updated_at > '2'
+                                                   ^
+
+Nenhum dado para inserir em city.
+Tempo: 0:00:00.485354 
+
+Erro ao buscar dados da tabela customer: ERRO:  relação "public.customer" não existe
+LINE 2:         SELECT MAX(updated_at) FROM public. customer
+                                            ^
+
+Erro ao buscar dados da tabela customer: invalid input syntax for type timestamp: "2"
+LINE 3:                         WHERE updated_at > '2'
+                                                   ^
+
+Nenhum dado para inserir em customer.
+Tempo: 0:00:00.490523 
+
+Erro ao buscar dados da tabela unit: ERRO:  relação "public.unit" não existe
+LINE 2:         SELECT MAX(updated_at) FROM public. unit
+                                            ^
+
+Tabela 'unit' criada em public.
+Erro no upsert em unit: Sem chave única em unit.
+Tempo: 0:00:21.673157 
+
+Erro ao buscar dados da tabela realty: ERRO:  relação "public.realty" não existe
+LINE 2:         SELECT MAX(updated_at) FROM public. realty
+                                            ^
+
+Erro ao buscar dados da tabela realty: invalid input syntax for type timestamp: "2"
+LINE 3:                         WHERE updated_at > '2'
+                                                   ^
+
+Nenhum dado para inserir em realty.
+Tempo: 0:00:00.562933 
+
