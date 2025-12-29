@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 import os
-
+#  dag
 # Definindo argumentos padrão para a DAG
 default_args = {
     'owner': 'airflow',
