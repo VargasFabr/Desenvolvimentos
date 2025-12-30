@@ -1,0 +1,77 @@
+═══════════════════════════════════════════════════════════════════════
+              🚀 SOLUÇÃO PARA SEU PROBLEMA DO AIRFLOW 🚀
+═══════════════════════════════════════════════════════════════════════
+
+✅ PROBLEMA IDENTIFICADO E RESOLVIDO!
+
+Você estava tentando usar caminhos do WINDOWS (E:/Projetos/...) em um
+sistema LINUX. Isso não funciona!
+
+═══════════════════════════════════════════════════════════════════════
+                         ⚡ SOLUÇÃO RÁPIDA ⚡
+═══════════════════════════════════════════════════════════════════════
+
+Execute APENAS 1 COMANDO:
+
+    ./setup.sh
+
+Este script irá:
+  ✓ Criar toda estrutura de diretórios
+  ✓ Buscar automaticamente seus projetos  
+  ✓ Configurar volumes corretamente
+  ✓ Iniciar o Airflow
+
+═══════════════════════════════════════════════════════════════════════
+                      📚 DOCUMENTAÇÃO COMPLETA 📚
+═══════════════════════════════════════════════════════════════════════
+
+1. INDEX.md ⭐
+   └─> Índice de toda documentação (comece aqui!)
+
+2. INICIO_RAPIDO.md 🚀
+   └─> Solução em 3 passos
+
+3. AMBIENTE.md 🖥️
+   └─> Guia por sistema operacional (Linux/Windows/WSL/macOS)
+
+4. README.md 📖
+   └─> Documentação completa do projeto
+
+5. SOLUCAO.md 🔧
+   └─> Explicação detalhada do problema e solução
+
+6. COMANDOS_UTEIS.md 💻
+   └─> Referência rápida de comandos
+
+═══════════════════════════════════════════════════════════════════════
+                         🛠️ SCRIPTS ÚTEIS 🛠️
+═══════════════════════════════════════════════════════════════════════
+
+./setup.sh      - Configuração automática (primeira vez)
+./verify.sh     - Verificar se está tudo OK
+./migrate.sh    - Migrar de Windows para Linux
+
+═══════════════════════════════════════════════════════════════════════
+                      🎯 PRÓXIMOS PASSOS 🎯
+═══════════════════════════════════════════════════════════════════════
+
+1. Execute:       ./setup.sh
+2. Verifique:     ./verify.sh
+3. Acesse:        http://localhost:8081
+4. Login:         admin / admin
+5. Teste DAG:     test_volumes
+6. Execute DAG:   Atualiza_BackOffice
+
+═══════════════════════════════════════════════════════════════════════
+                         📞 ACESSO RÁPIDO 📞
+═══════════════════════════════════════════════════════════════════════
+
+URL:      http://localhost:8081
+Usuário:  admin
+Senha:    admin
+
+═══════════════════════════════════════════════════════════════════════
+
+💡 DICA: Leia o INDEX.md para navegar toda a documentação!
+
+═══════════════════════════════════════════════════════════════════════

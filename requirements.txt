@@ -1,0 +1,4 @@
+# Adicione aqui as dependências Python necessárias para seus scripts
+# Exemplo:
+# pandas==2.1.4
+# requests==2.31.0
