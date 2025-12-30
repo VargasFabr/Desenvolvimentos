@@ -1,0 +1,98 @@
+# EXEMPLO de docker-compose para Windows/WSL
+# NÃO USE ESTE ARQUIVO DIRETAMENTE!
+# Este é apenas um exemplo de como configurar em diferentes ambientes
+
+version: '3.8'
+
+services:
+  airflow-standalone:
+    image: apache/airflow:3.1.3
+    container_name: airflow3-standalone
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=America/Sao_Paulo
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
+      - AIRFLOW__API__EXPOSE_CONFIG=true
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth
+      - AIRFLOW__WEBSERVER__SECRET_KEY=mysecretkey
+      - _AIRFLOW_WWW_USER_CREATE=true
+      - _AIRFLOW_WWW_USER_USERNAME=admin
+      - _AIRFLOW_WWW_USER_PASSWORD=admin
+      - _AIRFLOW_WWW_USER_FIRSTNAME=Admin
+      - _AIRFLOW_WWW_USER_LASTNAME=User
+      - _AIRFLOW_WWW_USER_EMAIL=admin@admin.com
+      - _AIRFLOW_WWW_USER_ROLE=Admin
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./requirements.txt:/opt/airflow/requirements.txt
+      
+      # ========================================
+      # ESCOLHA UMA DAS OPÇÕES ABAIXO:
+      # ========================================
+      
+      # OPÇÃO 1: Windows Nativo (Docker Desktop)
+      # Use caminhos Windows completos com barra normal
+      # - C:/Users/SeuUsuario/Projetos/Melnick-Code:/opt/airflow/Melnick-Code
+      # - C:/Users/SeuUsuario/Projetos/VS_Code:/opt/airflow/ProjetosVS
+      
+      # OPÇÃO 2: WSL (Windows Subsystem for Linux)
+      # Use /mnt/ para acessar drives do Windows
+      # - /mnt/e/Projetos/VS_Code/Melnick-Code:/opt/airflow/Melnick-Code
+      # - /mnt/e/Projetos/VS_Code:/opt/airflow/ProjetosVS
+      
+      # OPÇÃO 3: Linux Puro (RECOMENDADO)
+      # Use caminhos relativos ou absolutos Linux
+      - ./ProjetosVS:/opt/airflow/ProjetosVS
+      # OU
+      # - /home/usuario/Projetos:/opt/airflow/ProjetosVS
+      
+      # ========================================
+      
+      - airflow-db:/opt/airflow/airflow-db
+    command: standalone
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /opt/airflow/airflow-webserver.pid ]"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+volumes:
+  airflow-db:
+
+# ========================================
+# EXEMPLOS DE USO POR AMBIENTE:
+# ========================================
+
+# 1. Windows com Docker Desktop:
+#    volumes:
+#      - C:/Users/SeuNome/Projetos:/opt/airflow/ProjetosVS
+#
+#    Nota: Use / não \ nas barras
+
+# 2. WSL (Ubuntu no Windows):
+#    volumes:
+#      - /mnt/e/Projetos/VS_Code:/opt/airflow/ProjetosVS
+#
+#    Nota: E: vira /mnt/e, C: vira /mnt/c
+
+# 3. Linux Nativo:
+#    volumes:
+#      - ./ProjetosVS:/opt/airflow/ProjetosVS
+#      - /home/usuario/Projetos:/opt/airflow/ProjetosVS
+#
+#    Nota: Sempre use / para diretórios
+
+# 4. macOS:
+#    volumes:
+#      - ./ProjetosVS:/opt/airflow/ProjetosVS
+#      - /Users/usuario/Projetos:/opt/airflow/ProjetosVS
+#
+#    Nota: Similar ao Linux
