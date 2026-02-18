@@ -123,6 +123,12 @@ Private Function ValidarContextoBusca(ByVal area As String, _
     Dim rngArea As Range
     Dim rngItem As Range
     Dim rngPerfil As Range
+    Dim faixaArea As Range
+    Dim faixaItem As Range
+    Dim linhaIniArea As Long
+    Dim linhaFimArea As Long
+    Dim linhaIniItem As Long
+    Dim linhaFimItem As Long
 
     nomeAbaBusca = Trim$(CStr(Planilha7.Cells(11, 3).Value))
     perfil = Trim$(CStr(Planilha7.Cells(3, 3).Value))
@@ -145,15 +151,37 @@ Private Function ValidarContextoBusca(ByVal area As String, _
         Exit Function
     End If
 
-    ultimaColuna = ws.Cells(4, ws.Columns.Count).End(xlToLeft).Column
+    ultimaColuna = ws.Cells(14, ws.Columns.Count).End(xlToLeft).Column
     If ultimaColuna < 1 Then Exit Function
 
-    If Not EncontrarContextoBusca(ws, area, nomeItem, perfil, ultimaColuna, rngArea, rngItem, rngPerfil) Then
+    Set rngArea = EncontrarNoRange(ws.UsedRange, area, False)
+    If rngArea Is Nothing Then
         If exibirMensagem Then
-            MsgBox "Não foi possível localizar o contexto completo (Área > Item > Perfil)." & vbCrLf & _
-                   "Área: " & area & vbCrLf & _
-                   "Item: " & nomeItem & vbCrLf & _
-                   "Perfil: " & perfil, vbExclamation
+            MsgBox "Área não encontrada na aba '" & ws.Name & "': " & area, vbExclamation
+        End If
+        Exit Function
+    End If
+
+    linhaIniArea = rngArea.MergeArea.Row
+    linhaFimArea = linhaIniArea + rngArea.MergeArea.Rows.Count - 1
+    Set faixaArea = ws.Range(ws.Cells(linhaIniArea, 2), ws.Cells(linhaFimArea, 2))
+
+    Set rngItem = EncontrarNoRange(faixaArea, nomeItem, False)
+    If rngItem Is Nothing Then
+        If exibirMensagem Then
+            MsgBox "Item não encontrado dentro da área '" & area & "': " & nomeItem, vbExclamation
+        End If
+        Exit Function
+    End If
+
+    linhaIniItem = rngItem.MergeArea.Row
+    linhaFimItem = linhaIniItem + rngItem.MergeArea.Rows.Count - 1
+    Set faixaItem = ws.Range(ws.Cells(linhaIniItem, 3), ws.Cells(linhaFimItem, 3))
+
+    Set rngPerfil = EncontrarNoRange(faixaItem, perfil, False)
+    If rngPerfil Is Nothing Then
+        If exibirMensagem Then
+            MsgBox "Perfil não encontrado no item '" & nomeItem & "': " & perfil, vbExclamation
         End If
         Exit Function
     End If
@@ -175,6 +203,13 @@ Function ProcessarDadosPlanilha( _
     Dim rngItem As Range
     Dim rngPerfil As Range
     Dim rngCabecalho As Range
+    Dim faixaArea As Range
+    Dim faixaItem As Range
+
+    Dim linhaIniArea As Long
+    Dim linhaFimArea As Long
+    Dim linhaIniItem As Long
+    Dim linhaFimItem As Long
     Dim linhaIniPerfil As Long
     Dim linhaFimPerfil As Long
     Dim colunaDestino As Long
@@ -207,15 +242,35 @@ Function ProcessarDadosPlanilha( _
         Exit Function
     End If
 
-    ultimaColuna = ws.Cells(4, ws.Columns.Count).End(xlToLeft).Column
+    ultimaColuna = ws.Cells(14, ws.Columns.Count).End(xlToLeft).Column
     If ultimaColuna < 1 Then Exit Function
 
-    ' 1) + 2) + 3) Encontra contexto completo: área -> item -> perfil.
-    If Not EncontrarContextoBusca(ws, area, nomeItem, perfil, ultimaColuna, rngArea, rngItem, rngPerfil) Then
-        MsgBox "Não foi possível localizar o contexto completo (Área > Item > Perfil)." & vbCrLf & _
-               "Área: " & area & vbCrLf & _
-               "Item: " & nomeItem & vbCrLf & _
-               "Perfil: " & perfil, vbExclamation
+    ' 1) Encontra a área na aba definida em texto2.
+    Set rngArea = EncontrarNoRange(ws.UsedRange, area, False)
+    If rngArea Is Nothing Then
+        MsgBox "Área não encontrada na aba '" & ws.Name & "': " & area, vbExclamation
+        Exit Function
+    End If
+
+    linhaIniArea = rngArea.MergeArea.Row
+    linhaFimArea = linhaIniArea + rngArea.MergeArea.Rows.Count - 1
+    Set faixaArea = ws.Range(ws.Cells(linhaIniArea, 2), ws.Cells(linhaFimArea, 2))
+
+    ' 2) Dentro da área, encontra o nome do item (Controle!E).
+    Set rngItem = EncontrarNoRange(faixaArea, nomeItem, False)
+    If rngItem Is Nothing Then
+        MsgBox "Item não encontrado dentro da área '" & area & "': " & nomeItem, vbExclamation
+        Exit Function
+    End If
+
+    linhaIniItem = rngItem.MergeArea.Row
+    linhaFimItem = linhaIniItem + rngItem.MergeArea.Rows.Count - 1
+    Set faixaItem = ws.Range(ws.Cells(linhaIniItem, 3), ws.Cells(linhaFimItem, 3))
+
+    ' 3) Dentro do item, encontra o perfil (Executivo/Proprietário).
+    Set rngPerfil = EncontrarNoRange(faixaItem, perfil, False)
+    If rngPerfil Is Nothing Then
+        MsgBox "Perfil não encontrado no item '" & nomeItem & "': " & perfil, vbExclamation
         Exit Function
     End If
 
@@ -223,7 +278,7 @@ Function ProcessarDadosPlanilha( _
     linhaFimPerfil = linhaIniPerfil + rngPerfil.MergeArea.Rows.Count - 1
 
     ' 4) Resolve a coluna alvo (nomeItens: PISO, RODAPÉ, etc).
-    Set rngCabecalho = EncontrarCabecalho(ws, nomeItens, 1, 10)
+    Set rngCabecalho = EncontrarCabecalho(ws, nomeItens, 4, ultimaColuna)
     If rngCabecalho Is Nothing Then
         MsgBox "Coluna '" & nomeItens & "' não encontrada na aba '" & ws.Name & "'.", vbExclamation
         Exit Function
