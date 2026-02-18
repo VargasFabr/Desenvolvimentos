@@ -93,6 +93,15 @@ Function ProcessarSelecaoPlanilhas(lista As Collection, _
 
     Set dict = CreateObject("Scripting.Dictionary")
 
+    ' Valida o contexto (Área > Item > Perfil) apenas uma vez por linha do Controle.
+    ' Se não existir, não tenta processar Piso/Rodapé/Paredes para evitar mensagens repetidas.
+    If Not ValidarContextoBusca(area, nomeItem, True) Then
+        Set ProcessarSelecaoPlanilhas = dict
+        Unload frm
+        Set frm = Nothing
+        Exit Function
+    End If
+
     For Each p In frm.PlanilhasSelecionadas
         dict(p) = ProcessarDadosPlanilha(CStr(p), area, nomeItem)
     Next p
@@ -101,6 +110,55 @@ Function ProcessarSelecaoPlanilhas(lista As Collection, _
 
     Unload frm
     Set frm = Nothing
+End Function
+
+Private Function ValidarContextoBusca(ByVal area As String, _
+                                      ByVal nomeItem As String, _
+                                      ByVal exibirMensagem As Boolean) As Boolean
+    Dim ws As Worksheet
+    Dim nomeAbaBusca As String
+    Dim perfil As String
+    Dim ultimaColuna As Long
+
+    Dim rngArea As Range
+    Dim rngItem As Range
+    Dim rngPerfil As Range
+
+    nomeAbaBusca = Trim$(CStr(Planilha7.Cells(11, 3).Value))
+    perfil = Trim$(CStr(Planilha7.Cells(3, 3).Value))
+
+    If Len(nomeAbaBusca) = 0 Then
+        If exibirMensagem Then
+            MsgBox "A célula C11 da Planilha7 está vazia (nome da aba de busca).", vbExclamation
+        End If
+        Exit Function
+    End If
+
+    On Error Resume Next
+    Set ws = ThisWorkbook.Worksheets(nomeAbaBusca)
+    On Error GoTo 0
+
+    If ws Is Nothing Then
+        If exibirMensagem Then
+            MsgBox "A aba '" & nomeAbaBusca & "' não foi encontrada.", vbExclamation
+        End If
+        Exit Function
+    End If
+
+    ultimaColuna = ws.Cells(4, ws.Columns.Count).End(xlToLeft).Column
+    If ultimaColuna < 1 Then Exit Function
+
+    If Not EncontrarContextoBusca(ws, area, nomeItem, perfil, ultimaColuna, rngArea, rngItem, rngPerfil) Then
+        If exibirMensagem Then
+            MsgBox "Não foi possível localizar o contexto completo (Área > Item > Perfil)." & vbCrLf & _
+                   "Área: " & area & vbCrLf & _
+                   "Item: " & nomeItem & vbCrLf & _
+                   "Perfil: " & perfil, vbExclamation
+        End If
+        Exit Function
+    End If
+
+    ValidarContextoBusca = True
 End Function
 
 Function ProcessarDadosPlanilha( _
