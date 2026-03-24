@@ -1,0 +1,134 @@
+{
+  "name": "OTTO - Reset senha (Admin) - Selenium",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "otto-admin-reset-senha",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1000,
+        240
+      ],
+      "id": "1d1c8f5a-8d7d-4adf-bf7a-6f2c3b0a7b12",
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "language": "javascript",
+        "mode": "runOnceForAllItems",
+        "jsCode": "const email = $json.body?.email;\nif (!email) {\n  throw new Error('O webhook precisa enviar body.email (ex: {\"email\":\"usuario@dominio.com\"}).');\n}\nreturn [{ json: { email } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -780,
+        240
+      ],
+      "id": "5f7f7e8a-3c7b-4c5a-9f62-5dd1d0c8d1d5",
+      "name": "Extrair email"
+    },
+    {
+      "parameters": {
+        "language": "javascript",
+        "mode": "runOnceForAllItems",
+        "jsCode": "const email = $json.email;\n\nconst locatorPy = `import os\n\ndef try_exec(path: str):\n    if os.path.isfile(path):\n        g = {\"__name__\": \"__main__\"}\n        with open(path, \"r\", encoding=\"utf-8\") as f:\n            code = f.read()\n        exec(compile(code, path, 'exec'), g)\n        return True\n    return False\n\ncands = []\nfor base in ['.', '/app', '/workspace', '/home/node', '/opt']:\n    for rel in [\n        'n8n/otto_admin_selenium_reset_password_n8n_env.py',\n        './n8n/otto_admin_selenium_reset_password_n8n_env.py',\n        'otto_admin_selenium_reset_password_n8n_env.py'\n    ]:\n        if base == '.' and rel.startswith('./'):\n            cands.append(rel[2:])\n        elif base == '.':\n            cands.append(rel)\n        else:\n            cands.append(os.path.join(base, rel))\n\nfor p in cands:\n    if try_exec(p):\n        break\nelse:\n    raise FileNotFoundError('Nao encontrei otto_admin_selenium_reset_password_n8n_env.py em: ' + ', '.join(cands))\n`;\n\nconst cmd = [\n  'python3 -c \"import selenium\" >/dev/null 2>&1 || python3 -m pip install --user -q selenium webdriver-manager >/dev/null 2>&1',\n  `PYTHONUNBUFFERED=1 OTTO_TARGET_EMAIL=${JSON.stringify(email)} python3 -c ${JSON.stringify(locatorPy)}`\n].join('; ');\n\nreturn [{ json: { command: cmd } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -560,
+        240
+      ],
+      "id": "e9b2c9db-cf3b-4c6e-b6fd-7b7f3c8a7a55",
+      "name": "Montar comando Selenium"
+    },
+    {
+      "parameters": {
+        "executeOnce": true,
+        "command": "={{ $json.command }}"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        240
+      ],
+      "id": "0f8b7b2f-8d1b-49ce-8b8b-4c4dd6a7a5d0",
+      "name": "Executar Selenium"
+    },
+    {
+      "parameters": {
+        "language": "javascript",
+        "mode": "runOnceForAllItems",
+        "jsCode": "const raw = items?.[0]?.json ?? {};\nconst stdout = String(raw.stdout ?? '').trim();\nconst stderr = String(raw.stderr ?? '').trim();\n\nlet payload = null;\ntry {\n  payload = JSON.parse(stdout);\n} catch (e) {\n  // stdout pode vir com logs extra; tenta a ultima linha parseável\n  const lines = stdout.split(/\\r?\\n/).map((x) => x.trim()).filter(Boolean);\n  for (let i = lines.length - 1; i >= 0; i--) {\n    try {\n      payload = JSON.parse(lines[i]);\n      break;\n    } catch (e2) {\n      // continua tentando\n    }\n  }\n}\n\nif (!payload || typeof payload !== 'object') {\n  return [{\n    json: {\n      ok: false,\n      status: 'erro_parse_stdout',\n      stdout,\n      stderr,\n      hint: 'Nao foi possivel interpretar JSON do Execute Command.'\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    ...payload,\n    _meta: {\n      stderr\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        240
+      ],
+      "id": "9e0e5a2e-6cf4-4e33-9c6b-8d8bd6b6a3c6",
+      "name": "Parsear resultado"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extrair email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair email": {
+      "main": [
+        [
+          {
+            "node": "Montar comando Selenium",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar comando Selenium": {
+      "main": [
+        [
+          {
+            "node": "Executar Selenium",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executar Selenium": {
+      "main": [
+        [
+          {
+            "node": "Parsear resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}
+

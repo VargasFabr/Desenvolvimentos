@@ -1,0 +1,257 @@
+{
+  "name": "Melnick - Etapa 1 (Listar Empreendimentos Core)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b499e10b-8de6-4bf0-b656-f72928f4ea9b",
+      "name": "Executado por outro workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1280,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4d969944-cde7-4b34-be10-c7ef65e96956",
+              "name": "baseUrl",
+              "value": "https://www.melnick.com.br/empreendimentos/",
+              "type": "string"
+            },
+            {
+              "id": "880f5ab5-c4a4-4954-ac76-34118409cd84",
+              "name": "sitemapIndexUrl",
+              "value": "https://www.melnick.com.br/sitemap.xml",
+              "type": "string"
+            },
+            {
+              "id": "5cccf79c-cbb6-44d5-a04f-f4ddc11a4af1",
+              "name": "pageSitemapUrl",
+              "value": "https://www.melnick.com.br/page-sitemap.xml",
+              "type": "string"
+            },
+            {
+              "id": "7084e10c-02c1-45cd-8b01-6ec94f5bc5bb",
+              "name": "wpApiUrl",
+              "value": "https://www.melnick.com.br/wp-json/wp/v2/pages?per_page=100",
+              "type": "string"
+            },
+            {
+              "id": "ddd31e61-178d-40bc-a26e-8f3ee1d11ea2",
+              "name": "timeoutMs",
+              "value": 120000,
+              "type": "number"
+            },
+            {
+              "id": "4f2af1c5-cd40-4fe2-bb9f-c66dab6c4b84",
+              "name": "maxLinks",
+              "value": 120,
+              "type": "number"
+            },
+            {
+              "id": "79f6f570-7e6c-490f-bf5d-97f84f1f5f39",
+              "name": "seedUrlsJson",
+              "value": "[\"https://www.melnick.com.br/enterprise/go-bom-fim-2/\",\"https://www.melnick.com.br/enterprise/high-garden-rio-branco/\",\"https://www.melnick.com.br/enterprise/go-home-design/\"]",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9f6c3d69-8608-4db4-bbc9-bd4f65489053",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1060,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.baseUrl }}",
+        "options": {
+          "timeout": "={{ $json.timeoutMs }}",
+          "response": {
+            "neverError": true,
+            "response": {
+              "responseFormat": "string"
+            }
+          }
+        }
+      },
+      "id": "83fcb849-d7a0-4a72-8708-912eecb4fced",
+      "name": "Baixar empreendimentos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -840,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $item(0).$node['Config'].json.sitemapIndexUrl }}",
+        "options": {
+          "timeout": "={{ $item(0).$node['Config'].json.timeoutMs }}",
+          "response": {
+            "neverError": true,
+            "response": {
+              "responseFormat": "string"
+            }
+          }
+        }
+      },
+      "id": "46fcb679-3db1-4a37-a7d2-54a1f5474485",
+      "name": "Baixar sitemap index",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "continueOnFail": true,
+      "position": [
+        -620,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $item(0).$node['Config'].json.pageSitemapUrl }}",
+        "options": {
+          "timeout": "={{ $item(0).$node['Config'].json.timeoutMs }}",
+          "response": {
+            "neverError": true,
+            "response": {
+              "responseFormat": "string"
+            }
+          }
+        }
+      },
+      "id": "5be27653-16f8-45a5-83a5-2a6f665d487b",
+      "name": "Baixar page sitemap",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "continueOnFail": true,
+      "position": [
+        -400,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $item(0).$node['Config'].json.wpApiUrl }}",
+        "options": {
+          "timeout": "={{ $item(0).$node['Config'].json.timeoutMs }}",
+          "response": {
+            "neverError": true,
+            "response": {
+              "responseFormat": "string"
+            }
+          }
+        }
+      },
+      "id": "cbbeb8fa-63f5-44f0-b1d0-66e71c0123e2",
+      "name": "Baixar WP API pages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "continueOnFail": true,
+      "position": [
+        -180,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "mode": "runOnceForAllItems",
+        "jsCode": "const cfg = $item(0).$node['Config'].json;\n\nconst bodies = {\n  empreendimentos: String($item(0).$node['Baixar empreendimentos'].json.body ?? ''),\n  sitemapIndex: String($item(0).$node['Baixar sitemap index'].json.body ?? ''),\n  pageSitemap: String($item(0).$node['Baixar page sitemap'].json.body ?? ''),\n  wpApi: String($item(0).$node['Baixar WP API pages'].json.body ?? '')\n};\n\nconst status = {\n  empreendimentos: Number($item(0).$node['Baixar empreendimentos'].json.statusCode ?? 0),\n  sitemapIndex: Number($item(0).$node['Baixar sitemap index'].json.statusCode ?? 0),\n  pageSitemap: Number($item(0).$node['Baixar page sitemap'].json.statusCode ?? 0),\n  wpApi: Number($item(0).$node['Baixar WP API pages'].json.statusCode ?? 0)\n};\n\nconst normalize = (u) => {\n  if (!u || typeof u !== 'string') return null;\n  let v = u.trim();\n  v = v.replace(/\\\\u002F/g, '/');\n  v = v.replace(/\\\\\\//g, '/');\n  v = v.replace(/[\"'<>]/g, '');\n  if (v.startsWith('//')) v = 'https:' + v;\n  if (v.startsWith('/')) v = 'https://www.melnick.com.br' + v;\n  if (!/^https?:\\/\\//i.test(v)) return null;\n  if (!/\\/enterprise\\//i.test(v)) return null;\n  v = v.replace(/#.*$/, '').replace(/\\?.*$/, '').replace(/\\/$/, '') + '/';\n  return v;\n};\n\nconst fromBody = (body) => {\n  const out = [];\n  const regexes = [\n    new RegExp('https?:\\\\\\\\/\\\\\\\\/www\\\\\\\\.melnick\\\\\\\\.com\\\\\\\\.br\\\\\\\\/enterprise\\\\\\\\/[A-Za-z0-9_-]+(?:\\\\\\\\/[A-Za-z0-9_-]+)*', 'gi'),\n    new RegExp('\\\\\\\\/enterprise\\\\\\\\/[A-Za-z0-9_-]+(?:\\\\\\\\/[A-Za-z0-9_-]+)*', 'gi'),\n    new RegExp('\"url\"\\\\\\\\s*:\\\\\\\\s*\"([^\"\\\\\\\\n]*\\\\\\\\/enterprise\\\\\\\\/[^\"\\\\\\\\n]*)\"', 'gi'),\n    new RegExp('href\\\\\\\\s*=\\\\\\\\s*\"([^\"\\\\\\\\n]*\\\\\\\\/enterprise\\\\\\\\/[^\"\\\\\\\\n]*)\"', 'gi'),\n    new RegExp('<loc>([^<]*\\\\\\\\/enterprise\\\\\\\\/[^<]*)<\\\\\\\\/loc>', 'gi')\n  ];\n\n  for (const rgx of regexes) {\n    while (true) {\n      const m = rgx.exec(body);\n      if (!m) break;\n      out.push(m[1] || m[0]);\n    }\n  }\n  return out;\n};\n\nconst all = new Set();\nconst sourceCounts = {\n  empreendimentos: 0,\n  sitemapIndex: 0,\n  pageSitemap: 0,\n  wpApi: 0,\n  seed: 0\n};\n\nfor (const key of Object.keys(bodies)) {\n  const arr = fromBody(bodies[key]);\n  for (const candidate of arr) {\n    const norm = normalize(candidate);\n    if (norm && !all.has(norm)) {\n      all.add(norm);\n      sourceCounts[key] += 1;\n    }\n  }\n}\n\nlet seedUrls = [];\ntry {\n  const parsed = JSON.parse(String(cfg.seedUrlsJson || '[]'));\n  if (Array.isArray(parsed)) seedUrls = parsed;\n} catch (e) {\n  seedUrls = [];\n}\n\nfor (const s of seedUrls) {\n  const norm = normalize(s);\n  if (norm && !all.has(norm)) {\n    all.add(norm);\n    sourceCounts.seed += 1;\n  }\n}\n\nconst links = [...all].sort().slice(0, Number(cfg.maxLinks ?? 120));\nconst bodyLength = {\n  empreendimentos: bodies.empreendimentos.length,\n  sitemapIndex: bodies.sitemapIndex.length,\n  pageSitemap: bodies.pageSitemap.length,\n  wpApi: bodies.wpApi.length\n};\n\nif (!links.length) {\n  return [{\n    json: {\n      status: 'sem_links',\n      totalLinks: 0,\n      links: [],\n      status,\n      bodyLength,\n      sourceCounts\n    }\n  }];\n}\n\nreturn links.map((empreendimentoUrl, i) => ({\n  json: {\n    indice: i + 1,\n    totalLinks: links.length,\n    empreendimentoUrl,\n    status,\n    bodyLength,\n    sourceCounts\n  }\n}));"
+      },
+      "id": "4b95ee67-af87-4f26-b76a-a78e7ed7494d",
+      "name": "Consolidar links multi-fonte",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        60,
+        240
+      ]
+    }
+  ],
+  "connections": {
+    "Executado por outro workflow": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Baixar empreendimentos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar empreendimentos": {
+      "main": [
+        [
+          {
+            "node": "Baixar sitemap index",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar sitemap index": {
+      "main": [
+        [
+          {
+            "node": "Baixar page sitemap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar page sitemap": {
+      "main": [
+        [
+          {
+            "node": "Baixar WP API pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar WP API pages": {
+      "main": [
+        [
+          {
+            "node": "Consolidar links multi-fonte",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

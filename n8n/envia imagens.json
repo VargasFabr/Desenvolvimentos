@@ -1,0 +1,385 @@
+{
+  "name": "Envia imagens",
+  "nodes": [
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Busque mídias de empreendimento no banco.\n\nEntrada esperada (fromAI):\n- empreendimento_nome: nome completo em lowercase quando o cliente informar nome completo.\n- termo_curto: gíria/sigla/termo curto (ex.: gpl, grand park, decorado, torre).\n\nRegras:\n- Sempre preencher pelo menos um dos campos.\n- Retorne as colunas empreendimento, bairro, rua, keywords, full_text_search_index, midias.\n- Não invente dados.\n\nUso recomendado:\n- Nome completo -> prioridade em empreendimento.\n- Gíria/sigla/recorte -> keywords + full_text_search_index.",
+        "operation": "executeQuery",
+        "query": "SELECT empreendimento, bairro, rua, keywords, full_text_search_index, midias\nFROM public.media_otto\nWHERE (\n  lower(empreendimento) LIKE '%{{ $fromAI('empreendimento_nome', 'nome completo do empreendimento em lowercase; ex.: grand park lindoia', 'string') }}%'\n  OR lower(COALESCE(keywords::text, '')) LIKE '%{{ $fromAI('termo_curto', 'sigla/giria/termo curto em lowercase; ex.: gpl, grand park, decorado, torre', 'string') }}%'\n  OR full_text_search_index @@ plainto_tsquery('portuguese', '{{ $fromAI('termo_curto', 'sigla/giria/termo curto em lowercase; ex.: gpl, grand park, decorado, torre', 'string') }}')\n)\nLIMIT 80;",
+        "options": {}
+      },
+      "id": "d3684932-4462-4807-bead-795aa94f028e",
+      "name": "busca midias especialista",
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        544,
+        592
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ACXPexMUsFVkEAwB",
+          "name": "Postgres Otto"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# consulta e resposta do agente\n## o agente consulta a resposta e envia, caso seja necessário a intervenção humana, executa o subworkflow, inserindo um ckeck para interromper o fluxo.",
+        "height": 1344,
+        "width": 2004,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "fbcb82bc-d53f-42f5-abc2-6e83921038b6",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        128,
+        336
+      ],
+      "id": "8214b100-7540-41e4-9cf3-aff95e1e292a",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1bb0e2be-58d2-4915-a2e6-18fce445ed06",
+              "leftValue": "={{ Array.isArray($json.output?.midias) && $json.output.midias.some(m => m?.url) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        736,
+        304
+      ],
+      "id": "27f42d99-b426-4456-9b7d-bfe49361227c",
+      "name": "Tem midias para baixar?"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "=992837030576176",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').first().json.contacts?.[0]?.wa_id ?? '' }}",
+        "messageType": "image",
+        "mediaPath": "useMedian8n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        1792,
+        480
+      ],
+      "id": "503fa234-b709-48a7-b3fa-82598922d9bf",
+      "name": "Enviar arquivo WhatsApp",
+      "webhookId": "8f425e73-01df-45d1-abf6-2f04c2eeb857",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "rcxIpzHLXrYpUxSX",
+          "name": "WhatsApp send"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1296,
+        240
+      ],
+      "id": "3fbe5371-7e7b-41ba-9b83-a5b7ae50b44e",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://python-img:8000/convert/jpeg",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=url",
+              "value": "={{ $json.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1584,
+        256
+      ],
+      "id": "bd634900-4b32-4eb5-8a29-d12ff4d6934b",
+      "name": "Converter para JPEG (API Python)"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"empreendimento\": \"arte cidade nilo\",\n  \"bairro\": \"Bela Vista\",\n  \"rua\": \"Rua Carazinho\",\n  \"keywords\": null,\n  \"full_text_search_index\": \"'arte':2 'cidad':3 'melnick':1 'nil':4\",\n  \"midias\": [\n    {\n      \"url\": \"https://www.otto.com.vc/assets/material/ARTE_CIDADE_NILO/realty-media-2787fc30-6cf3-52e8-8164-3fd40c542eb9.jpg\",\n      \"midia\": \"Axonometrica\"\n\n    },\n    {\n      \"url\": \"https://www.youtube.com/watch?v=mHFqr-_WXsY\",\n      \"midia\": \"Cidade Nilo: o novo destino de luxo em Porto Alegre.\"\n    }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        704,
+        608
+      ],
+      "id": "2fef2a6a-74be-484a-b7aa-75e9ff94af80",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.midias",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        240
+      ],
+      "id": "946a2c45-42b4-4535-902f-3b8e7f29fc63",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        400,
+        608
+      ],
+      "id": "faf508fd-9894-4249-9d9a-67910468f0fb",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "i6I45jcnWPk3iPHU",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=voce é um agente de ia que manda imagens, seu objetivo é pegar a entrada de dados e formatar na sintaxe do output parcer{{ $json.url }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        384,
+        336
+      ],
+      "id": "31226ff4-d54f-4375-b493-079dc13b4d43",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "const nome = $('When Executed by Another Workflow').first().json.nome || '';\nconst saudacaoNome = nome ? `, ${nome}` : '';\nreturn [{ json: { response: `. imagens enviadas.` } }]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        480
+      ],
+      "id": "e27acbcc-d5e9-4452-8753-9949b1c27c31",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "guardrailsInput": "Quero fotos da torre do arte cidade nilo\n",
+          "checks": [
+            {
+              "name": "",
+              "triggered": false,
+              "confidenceScore": 0,
+              "executionFailed": false,
+              "info": {}
+            }
+          ],
+          "url": "https://www.otto.com.vc/assets/material/ARTE_CIDADE_NILO/realty-media-aa7205e3-f778-5555-8085-55a3d4f0d2c4.jpg,https://www.otto.com.vc/assets/material/ARTE_CIDADE_NILO/realty-media-766864ab-4194-5630-8b46-3bf5af9de996.jpg,https://www.otto.com.vc/assets/material/ARTE_CIDADE_NILO/realty-media-4cdd98e2-36c1-5c51-b361-1ba41e24310b.jpg,https://www.otto.com.vc/assets/material/ARTE_CIDADE_NILO/realty-media-ddbef604-64cd-5d78-910b-692cb968d702.JPG",
+          "toolCallId": "dfd5bee5-57a0-4803-92d0-2bef9f63b7b0",
+          "documento": "https://www.otto.com.vc/assets/material/ARTE_CIDADE_NILO/realty-media-aa7205e3-f778-5555-8085-55a3d4f0d2c4.jpg,https://www.otto.com.vc/assets/material/ARTE_CIDADE_NILO/realty-media-766864ab-4194-5630-8b46-3bf5af9de996.jpg,https://www.otto.com.vc/assets/material/ARTE_CIDADE_NILO/realty-media-4cdd98e2-36c1-5c51-b361-1ba41e24310b.jpg,https://www.otto.com.vc/assets/material/ARTE_CIDADE_NILO/realty-media-ddbef604-64cd-5d78-910b-692cb968d702.JPG"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "busca midias especialista": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tem midias para baixar?": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Converter para JPEG (API Python)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Converter para JPEG (API Python)": {
+      "main": [
+        [
+          {
+            "node": "Enviar arquivo WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar arquivo WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Tem midias para baixar?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "101c0c6e-cb03-4cfb-9612-8c6ce8f60f35",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9d470391fd910c08edaac8c58913fa0be32a0dad5fb89a16e9dfe039b16ec4f6"
+  },
+  "id": "4eSgGmrZrNeq7bO4",
+  "tags": []
+}
