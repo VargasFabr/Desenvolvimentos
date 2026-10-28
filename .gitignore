@@ -1,0 +1,31 @@
+# Versões originais do curso (canônico = notebook/script renomeado)
+Projetos/1 descomplicando algoritimos e modelos/Projeto3.ipynb
+Projetos/2 dados em larga escala/Projeto4.ipynb
+Projetos/4 marketing/Projeto6.ipynb
+Projetos/6 cliente/projeto9.py
+Projetos/7 logistica/Projeto10.ipynb
+Projetos/8 finanças e credito/Projeto12.ipynb
+Projetos/9 agronegocio/Projeto11.ipynb
+Projetos/3 sentimento texto/Projeto2.ipynb
+
+# Temporários / lixo de zip
+Projetos/**/.tmp/
+Projetos/**/__MACOSX/
+Projetos/**/__pycache__/
+**/__pycache__/
+
+# Artefatos geoespaciais pesados
+*.fgb
+
+# Visão computacional: imagens + pesos
+Projetos/9 agronegocio/dados/
+Projetos/9 agronegocio/modelos/
+
+# Modelos / checkpoints gerados
+*.keras
+**/dsa_modelo_final/
+
+# Datasets grandes
+Projetos/3 sentimento texto/dataset.csv
+Projetos/1 descomplicando algoritimos e modelos/dataset.csv
+Projetos/1 descomplicando algoritimos e modelos/dados_*.csv

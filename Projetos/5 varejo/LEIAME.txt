@@ -1,0 +1,33 @@
+# Projeto 7 - IA Para Previsão de Demanda e Otimização do Estoque de Produtos Sazonais
+
+# Instruções:
+
+# 1- Instale o Docker Desktop conforme instruções das aulas.
+
+# 2- Abra o terminal ou prompt de comando e execute a instrução abaixo para criar o container Docker:
+
+docker run --name dsa-projeto7 -p 5551:5432 -e POSTGRES_USER=dsa -e POSTGRES_PASSWORD=dsa1010 -e POSTGRES_DB=dsadb -d postgres:16.1
+
+# 3- Instale o Anaconda Python conforme instruções das aulas.
+
+# 4- Abra o terminal ou prompt de comando, navegue até a pasta com os arquivos e execute o comando abaixo para criar um ambiente virtual:
+
+conda create --name dsabusinessp7 python=3.12
+
+# 5- Ative o ambiente:
+
+conda activate dsabusinessp7 (ou: source activate dsabusinessp7)
+
+# 6- Abra o terminal ou prompt de comando, navegue até a pasta onde estão os arquivos e instale pip e as dependências: 
+
+conda install pip
+pip install -r requirements.txt
+
+# 7- Abra o terminal ou prompt de comando, navegue até a pasta onde estão os arquivos e execute o pipeline assim:
+
+python Projeto7-05-Run-Pipeline.py
+
+# Use os comandos abaixo para desativar o ambiente virtual e remover o ambiente (opcional):
+
+conda deactivate
+conda remove --name dsabusinessp7 --all

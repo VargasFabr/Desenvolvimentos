@@ -1,0 +1,28 @@
+# Projeto 10 - Previsão de Demanda Para Otimizar a Entrega de Produtos e Uso de Transportadoras
+
+# Abra o terminal ou prompt de comando, navegue até a pasta com os arquivos e execute o comando abaixo para criar um ambiente virtual:
+
+conda create --name dsabusp10 python=3.12
+
+# Ative o ambiente:
+
+conda activate dsabusp10 (ou: source activate dsabusp10)
+
+# Instale o pip e as dependências:
+
+conda install pip
+pip install -r requirements.txt 
+
+# Execute o jupyter notebook
+
+jupyter notebook
+
+# Acesse o jupyter pelo seu navegador padrão.
+
+# Use os comandos abaixo para desativar o ambiente virtual e remover o ambiente (opcional):
+
+conda deactivate
+conda remove --name dsabusp10 --all
+
+
+

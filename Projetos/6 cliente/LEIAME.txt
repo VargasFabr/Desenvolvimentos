@@ -1,0 +1,34 @@
+# Projeto 9 - Chatbot Personalizado com Sistema de Recomendação Para Suporte ao Cliente Usando LLMs
+
+# Abra o terminal ou prompt de comando, navegue até a pasta com os arquivos e execute o comando abaixo para criar um ambiente virtual:
+
+conda create --name dsabusp9 python=3.13
+
+# Ative o ambiente:
+
+conda activate dsabusp9 (ou: source activate dsabusp9)
+
+# Instale o pip e as dependências:
+
+conda install pip
+pip install -r requirements.txt 
+
+# Execute os scripts:
+
+streamlit run projeto9.py
+
+# Exemplos para testar o Chatbot:
+
+# Desejo comprar um produto. A empresa oferece frete grátis?
+# Como posso entrar em contato com o atendimento ao cliente?
+# A empresa oferece programa de fidelidade? Como faço para me cadastrar?
+# Posso reservar um produto online e retirar na loja?
+# Muito obrigado. Você é um Chatbot muito inteligente e a Data Science Academy sempre surpreende com cursos e projetos incríveis.
+
+# Use os comandos abaixo para desativar o ambiente virtual e remover o ambiente (opcional):
+
+conda deactivate
+conda remove --name dsabusp9 --all
+
+
+

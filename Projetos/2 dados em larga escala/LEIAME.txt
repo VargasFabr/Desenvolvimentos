@@ -1,0 +1,28 @@
+# Projeto 4 - Data Warehousing Analytics Para Análise Geoespacial com Python e DuckDB
+
+# Abra o terminal ou prompt de comando, navegue até a pasta com os arquivos e execute o comando abaixo para criar um ambiente virtual:
+
+conda create --name dsabusp4 python=3.13
+
+# Ative o ambiente:
+
+conda activate dsabusp4 (ou: source activate dsabusp4)
+
+# Instale o pip e as dependências:
+
+conda install pip
+pip install -r requirements.txt 
+
+# Execute o jupyter notebook
+
+jupyter notebook
+
+# Acesse o jupyter pelo seu navegador padrão.
+
+# Use os comandos abaixo para desativar o ambiente virtual e remover o ambiente (opcional):
+
+conda deactivate
+conda remove --name dsabusp4 --all
+
+
+

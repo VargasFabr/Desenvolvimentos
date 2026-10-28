@@ -1,0 +1,21 @@
+id_produto,nome_produto,id_categoria,id_fornecedor,preco_unitario
+1,Smartphone,1,1,999.99
+2,Laptop,1,1,1499.99
+3,TV 55",1,2,1999.99
+4,Caixa de Som Bluetooth,1,3,149.99
+5,Tablet,1,4,499.99
+6,Arroz 5kg,2,2,15.99
+7,Feijão 1kg,2,3,7.99
+8,Óleo de Cozinha 900ml,2,4,6.49
+9,Macarrão 500g,2,5,3.99
+10,Açúcar 1kg,2,5,4.29
+11,Camisa Polo,3,1,59.99
+12,Calça Jeans,3,2,89.99
+13,Tênis Esportivo,3,3,129.99
+14,Jaqueta de Couro,3,4,199.99
+15,Meias 3 pares,3,5,19.99
+16,Boneca,4,1,49.99
+17,Carro de Controle Remoto,4,2,89.99
+18,Lego Conjunto,4,3,149.99
+19,Ursinho de Pelúcia,4,4,39.99
+20,Quebra-cabeça 500 peças,4,5,29.99

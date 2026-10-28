@@ -1,0 +1,32 @@
+# Projeto 12 - Blockchain Analytics Para Criptoativos com Machine Learning
+
+# Abra o terminal ou prompt de comando, navegue até a pasta com os arquivos e execute o comando abaixo para criar um ambiente virtual:
+
+conda create --name dsabusp12 python=3.12
+
+# Ative o ambiente:
+
+conda activate dsabusp12 (ou: source activate dsabusp12)
+
+# Instale o pip e as dependências:
+
+conda install pip
+pip install -r requirements.txt 
+
+# Execute o jupyter notebook para treinar e salvar o modelo:
+
+jupyter notebook
+
+# Encerre o jupyter notebook após treinar o modelo e execute a app com o deploy do modelo:
+
+streamlit run projeto12app.py
+
+# Acesse o jupyter pelo seu navegador padrão.
+
+# Use os comandos abaixo para desativar o ambiente virtual e remover o ambiente (opcional):
+
+conda deactivate
+conda remove --name dsabusp12 --all
+
+
+
