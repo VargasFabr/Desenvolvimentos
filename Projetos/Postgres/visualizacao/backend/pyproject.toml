@@ -1,0 +1,15 @@
+[project]
+name = "cad-visualizacao-api"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "psycopg2-binary>=2.9.9",
+    "openpyxl>=3.1.5",
+    "pydantic>=2.9.0",
+    "python-multipart>=0.0.12",
+]
+
+[tool.uv]
+dev-dependencies = []

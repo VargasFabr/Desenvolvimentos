@@ -1,3 +1,8 @@
+# Segredos
+.env
+**/.env
+!**/.env.example
+
 # Versões originais do curso (canônico = notebook/script renomeado)
 Projetos/1 descomplicando algoritimos e modelos/Projeto3.ipynb
 Projetos/2 dados em larga escala/Projeto4.ipynb
@@ -29,3 +34,40 @@ Projetos/9 agronegocio/modelos/
 Projetos/3 sentimento texto/dataset.csv
 Projetos/1 descomplicando algoritimos e modelos/dataset.csv
 Projetos/1 descomplicando algoritimos e modelos/dados_*.csv
+
+# --- Airflow3: backups, PII, mídia, runtime ---
+Projetos/Airflow3/scripts/backups/
+Projetos/Airflow3/data/
+Projetos/Airflow3/logs/
+Projetos/Airflow3/**/media_otto_images/
+Projetos/Airflow3/**/Sharepoint/
+Projetos/Airflow3/**/Expediente*/
+Projetos/Airflow3/**/*.db
+Projetos/Airflow3/**/simple_auth_manager_passwords.json*
+Projetos/Airflow3/**/Arquivos/
+Projetos/Airflow3/**/Regiões/
+Projetos/Airflow3/**/*.parquet
+Projetos/Airflow3/**/Projeção*/data/
+Projetos/Airflow3/**/Projeções*/data/
+# Dumps de sessão Hermes (id sem extensão na raiz do Melnick-Code)
+Projetos/Airflow3/dags/AtualizaBackoffice/Melnick-Code/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_*
+
+# --- Postgres: deps, build, seeds/CSV comerciais ---
+Projetos/Postgres/**/node_modules/
+Projetos/Postgres/**/dist/
+Projetos/Postgres/fontes/
+Projetos/Postgres/cadastro/**/*seed*
+Projetos/Postgres/cadastro/**/*.csv
+
+# --- n8n: volumes / dados locais ---
+Projetos/n8n/data/
+Projetos/n8n/**/*.pem
+Projetos/n8n/**/*.key
+
+# Artefatos gerais
+*.db
+*.sqlite
+*.sqlite3
+**/logs/
+**/node_modules/
+**/dist/

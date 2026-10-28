@@ -1,0 +1,29 @@
+---
+description: PostgreSQL — obrigatório usar skill/agentes do plugin database-* ao manipular Postgres
+alwaysApply: true
+---
+
+# PostgreSQL — skill e agentes (obrigatório)
+
+Sempre que a tarefa envolver **manipulação de PostgreSQL** (schema, DDL/DML, queries, índices, migrations, load/ETL para PG, conexão `psycopg`/`asyncpg`/`sqlalchemy` com Postgres, troubleshooting de performance ou ops do banco):
+
+## 1. Skill (ler antes de escrever)
+
+1. **Leia e siga** [`agents/plugins/database-design/skills/postgresql/SKILL.md`](agents/plugins/database-design/skills/postgresql/SKILL.md) (`postgresql-table-design`) **antes** de propor ou alterar SQL/schema/código que toque Postgres.
+2. Se for **query lenta / EXPLAIN / índices / N+1**, leia também [`agents/plugins/developer-essentials/skills/sql-optimization-patterns/SKILL.md`](agents/plugins/developer-essentials/skills/sql-optimization-patterns/SKILL.md).
+
+## 2. Agentes (escolher pelo tipo de trabalho)
+
+| Situação | Agente |
+|---|---|
+| SQL complexo, CTEs, window functions, tuning de query | [`agents/plugins/database-design/agents/sql-pro.md`](agents/plugins/database-design/agents/sql-pro.md) |
+| Modelagem, escolha de tipos, schema novo, re-arquitetura | [`agents/plugins/database-design/agents/database-architect.md`](agents/plugins/database-design/agents/database-architect.md) |
+| Migrations, HA, backup/DR, ops cloud (RDS/Cloud SQL) | [`agents/plugins/database-migrations/agents/database-admin.md`](agents/plugins/database-migrations/agents/database-admin.md) |
+| Otimização de performance / scalability do banco | [`agents/plugins/database-migrations/agents/database-optimizer.md`](agents/plugins/database-migrations/agents/database-optimizer.md) |
+
+Inclua esta regra em **todo subagent** que manipule Postgres.
+
+## 3. Não fazer
+
+- Não inventar tipos/convenções fora da skill (`varchar(n)`, `serial`, `timestamp` sem tz, etc.) sem justificar o desvio.
+- Não pular a skill porque o arquivo “já é conhecido”.

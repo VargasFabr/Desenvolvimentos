@@ -1,0 +1,15 @@
+name: dacoes
+version: 1.0.0
+description: "Edição de dações no SharePoint Dações com sync no Postgres (avaliacao IA)."
+author: Melnick
+provides_tools:
+  - listar_campos_editaveis_dacoes
+  - buscar_dacoes
+  - obter_dacao
+  - editar_dacao
+  - listar_dacoes_pendentes_ia
+requires_env:
+  - DACOES
+  - DACOES_PASS
+  - POSTGRES_USER
+  - POSTGRES_PASS

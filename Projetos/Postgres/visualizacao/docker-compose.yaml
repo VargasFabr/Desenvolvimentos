@@ -1,0 +1,36 @@
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: visualizacao/backend/Dockerfile
+    ports:
+      - "8090:8090"
+    env_file:
+      - ../../../.env
+    environment:
+      OTTO_DB_HOST: ${OTTO_DB_HOST:-host.docker.internal}
+      OTTO_DB_PORT: ${OTTO_DB_PORT:-5432}
+      OTTO_DB_NAME: ${OTTO_DB_NAME:-otto}
+      OTTO_DB_USER: ${OTTO_DB_USER:-postgres}
+      OTTO_DB_PASSWORD: ${OTTO_DB_PASSWORD:-}
+      OTTO_DB_PASS: ${OTTO_DB_PASSWORD:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8090/api/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: visualizacao/frontend/Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped

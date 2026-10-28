@@ -1,0 +1,5 @@
+visualizacao/frontend/node_modules
+visualizacao/frontend/dist
+**/__pycache__
+**/.venv
+visualizacao/.env

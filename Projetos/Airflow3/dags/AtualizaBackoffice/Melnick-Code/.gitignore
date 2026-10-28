@@ -1,0 +1,26 @@
+# Environment variables
+.env
+.venv/
+venv/
+
+# Data directories
+**/Dados/
+AutoBackoffice_1_0.py
+Projetos/Órulo/Logs/
+Projetos/Órulo/Arquivos/
+Projetos/Órulo/Regiões/
+Projetos/Orulo*/Arquivos/
+Projetos/Orulo*/Regiões/
+Projetos/Orulo*/Logs/
+**/*.parquet
+**/Projeção*/data/
+**/Projeções*/data/
+# Hermes session dumps na raiz deste dir
+/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_*
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python

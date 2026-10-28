@@ -1,0 +1,67 @@
+# ============================================================
+# Stack "airflow": apenas o Airflow standalone.
+# n8n/chatwoot/postgres/redis/python -> e:\Projetos\VS_Code\Melnick\PROJETOS\N8N\app
+# tuneis SSH                          -> E:\Projetos\VS_Code\N8N\tunnels
+# Subir: docker compose up -d
+# ============================================================
+services:
+  airflow-standalone:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: airflow3-with-chromium:3.1.8
+    container_name: airflow3-standalone
+    # Segredos: hardlink ./.env → Desenvolvimentos/.env (gitignored)
+    env_file:
+      - .env
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=America/Sao_Paulo
+      # Segredos: AIRFLOW__CORE__FERNET_KEY, SECRET_KEYs, SIMPLE_AUTH → ../../.env
+      - AIRFLOW__CORE__FERNET_KEY=${AIRFLOW__CORE__FERNET_KEY}
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
+      - AIRFLOW__API__EXPOSE_CONFIG=true
+      - AIRFLOW__API__SECRET_KEY=${AIRFLOW__API__SECRET_KEY}
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth
+      - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__SECRET_KEY}
+      - AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS=${AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS}
+      - AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_PASSWORDS_FILE=/opt/airflow/simple_auth_manager_passwords.json.generated
+      - GOOGLE_CHROME_BIN=/usr/bin/chromium
+      - CHROME_BIN=/usr/bin/chromium
+      - CHROMEDRIVER_PATH=/usr/bin/chromedriver
+      - DOCUSIGN_DATA_PATH=/opt/airflow/data/docusign
+      - HERMES_ROOT=/opt/hermes
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./requirements.txt:/opt/airflow/requirements.txt
+      - ./data:/opt/airflow/data
+      - E:/Projetos/logsOtto:/opt/airflow/logsOtto
+      # Metadata SQLite (Connections, Variables, histórico) — persistente no host
+      - ./data/airflow-meta/airflow.db:/opt/airflow/airflow.db
+      # Senha aleatória do Simple Auth — persistente entre restarts
+      - ./data/airflow-meta/simple_auth_manager_passwords.json.generated:/opt/airflow/simple_auth_manager_passwords.json.generated
+      # Hermes Agent (host AppData) — deps security guard
+      - C:/Users/fabriciovargas/AppData/Local/hermes/hermes-agent:/opt/hermes
+
+    entrypoint: /bin/bash
+    command: >
+      -c "
+      if [ -f /opt/airflow/requirements.txt ]; then
+        pip install -r /opt/airflow/requirements.txt || true;
+      fi;
+      airflow db migrate;
+      airflow standalone
+      "
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/api/v2/version || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s

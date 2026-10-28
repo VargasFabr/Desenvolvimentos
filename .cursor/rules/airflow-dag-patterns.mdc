@@ -1,0 +1,15 @@
+---
+description: Airflow3 — obrigatório seguir airflow-dag-patterns ao editar DAGs e stack
+globs: PROJETOS/Airflow3/**
+alwaysApply: false
+---
+
+# Airflow3 — airflow-dag-patterns (obrigatório)
+
+Ao criar, editar ou debugar qualquer coisa em `PROJETOS/Airflow3/` (DAGs, plugins, `docker-compose`, scripts do stack):
+
+1. **Leia e siga** [`agents/plugins/data-engineering/skills/airflow-dag-patterns/SKILL.md`](agents/plugins/data-engineering/skills/airflow-dag-patterns/SKILL.md) **antes** de propor ou escrever código.
+2. Aplique os princípios da skill: DAG idempotente, tarefas atômicas, incremental, observável; dependências explícitas; evitar top-level code pesado nos `.py` de DAG.
+3. Inclua esta instrução em **todo subagent** que tocar `PROJETOS/Airflow3/`.
+
+Não invente padrões Airflow fora da skill sem justificar desvio em comentário no PR/commit.

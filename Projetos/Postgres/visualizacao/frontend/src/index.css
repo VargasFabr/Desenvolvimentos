@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply m-0 bg-slate-50 text-slate-900 antialiased;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  .focus-ring {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors focus-ring disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary text-primary-foreground hover:bg-slate-800;
+  }
+
+  .btn-secondary {
+    @apply btn border border-border bg-white text-slate-700 hover:bg-slate-50;
+  }
+
+  .btn-ghost {
+    @apply btn text-slate-600 hover:bg-slate-100;
+  }
+
+  .btn-accent {
+    @apply btn bg-accent text-white hover:bg-emerald-800;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  .input {
+    @apply w-full rounded-md border border-border bg-white px-3 py-2 text-sm focus-ring;
+  }
+
+  .select {
+    @apply input;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-slate-700;
+  }
+
+  .label-hint {
+    @apply mb-1 text-xs font-normal text-muted-foreground;
+  }
+
+  .card {
+    @apply rounded-lg border border-border bg-white shadow-sm;
+  }
+
+  .page-header {
+    @apply mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between;
+  }
+
+  .page-title {
+    @apply text-2xl font-semibold text-slate-900;
+  }
+
+  .table-scroll {
+    @apply w-full max-w-full overflow-x-hidden overflow-y-auto overscroll-x-contain;
+  }
+
+  /* Barra horizontal fixa abaixo da tabela — sempre visível quando há overflow */
+  .table-scroll-h {
+    @apply w-full max-w-full overflow-x-scroll overflow-y-hidden;
+    height: 14px;
+    scrollbar-gutter: stable;
+  }
+
+  .table-scroll-h::-webkit-scrollbar,
+  .table-scroll::-webkit-scrollbar {
+    height: 12px;
+    width: 12px;
+  }
+
+  .table-scroll-h::-webkit-scrollbar-thumb,
+  .table-scroll::-webkit-scrollbar-thumb {
+    @apply rounded-md bg-slate-400;
+    border: 2px solid rgb(241 245 249);
+  }
+
+  .table-scroll-h::-webkit-scrollbar-thumb:hover,
+  .table-scroll::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-500;
+  }
+
+  .table-scroll-h::-webkit-scrollbar-track,
+  .table-scroll::-webkit-scrollbar-track {
+    @apply bg-slate-200;
+  }
+
+  .table-scroll-h,
+  .table-scroll {
+    scrollbar-width: auto;
+    scrollbar-color: rgb(148 163 184) rgb(226 232 240);
+  }
+
+  .sticky-col-left {
+    @apply sticky left-0 z-10 bg-white shadow-[2px_0_4px_-2px_rgba(0,0,0,0.08)];
+  }
+
+  .sticky-col-right {
+    @apply sticky right-0 z-10 bg-white shadow-[-2px_0_4px_-2px_rgba(0,0,0,0.08)];
+  }
+
+  .sticky-header {
+    @apply sticky top-0 z-20 bg-slate-50;
+  }
+
+  .col-filter-btn {
+    @apply inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border border-slate-300 bg-white text-[10px] leading-none text-slate-600 hover:bg-slate-100;
+  }
+
+  .col-filter-btn-active {
+    @apply border-primary bg-primary text-white hover:bg-slate-800;
+  }
+
+  .skeleton {
+    @apply animate-pulse rounded bg-slate-200;
+  }
+}

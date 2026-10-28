@@ -1,0 +1,19 @@
+{
+  "allow": [
+    {
+      "name": "extract-zip",
+      "version": "2.0.1",
+      "reason": "Sem versão corrigida no npm (CVE-2026-56876); exception TI"
+    },
+    {
+      "name": "image-size",
+      "version": "2.0.2",
+      "reason": "Latest ainda 2.0.2 (CVE-2025-71319); exception TI"
+    },
+    {
+      "name": "cookie",
+      "version": "0.7.2",
+      "reason": "Versão já corrigida (CVE-2024-47764); falso positivo do scanner"
+    }
+  ]
+}

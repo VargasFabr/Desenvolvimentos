@@ -1,0 +1,8 @@
+requests
+python-dotenv
+selenium
+webdriver-manager
+psycopg2-binary
+fastapi
+uvicorn
+pydantic
