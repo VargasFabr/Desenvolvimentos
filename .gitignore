@@ -4,7 +4,7 @@
 !**/.env.example
 
 # Versões originais do curso (canônico = notebook/script renomeado)
-Projetos/1 descomplicando algoritimos e modelos/Projeto3.ipynb
+Projetos/1 manutenção preditiva com sensores IoT/Projeto3.ipynb
 Projetos/2 dados em larga escala/Projeto4.ipynb
 Projetos/4 marketing/Projeto6.ipynb
 Projetos/6 cliente/projeto9.py
@@ -32,8 +32,8 @@ Projetos/9 agronegocio/modelos/
 
 # Datasets grandes
 Projetos/3 sentimento texto/dataset.csv
-Projetos/1 descomplicando algoritimos e modelos/dataset.csv
-Projetos/1 descomplicando algoritimos e modelos/dados_*.csv
+Projetos/1 manutenção preditiva com sensores IoT/dataset.csv
+Projetos/1 manutenção preditiva com sensores IoT/dados_*.csv
 
 # --- Airflow3: backups, PII, mídia, runtime ---
 Projetos/Airflow3/scripts/backups/
