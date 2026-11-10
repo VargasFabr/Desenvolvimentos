@@ -83,7 +83,7 @@ Cases de aula, escritos como entrega de negócio. Métricas e “como rodar” f
 
 | # | Pasta | Pergunta de negócio | Entrega |
 |---|-------|---------------------|---------|
-| 1 | [`manutenção preditiva com sensores IoT`](Projetos/1%20manutenção%20preditiva%20com%20sensores%20IoT) | Quando intervir na máquina a partir de sensores, sem excesso de ordem de serviço? | Classificador de manutenção preditiva (melhor modelo por AUC) |
+| 1 | [`descomplicando algoritimos e modelos`](Projetos/1%20descomplicando%20algoritimos%20e%20modelos) | Quando intervir na máquina a partir de sensores, sem excesso de ordem de serviço? | Classificador de manutenção preditiva (melhor modelo por AUC) |
 | 2 | [`dados em larga escala`](Projetos/2%20dados%20em%20larga%20escala) | Na AOI, o inventário mesclado (Google+Microsoft) cobre quantos edifícios a mais que só o Google? | Camadas GIS + contagem de cobertura extra |
 | 3 | [`sentimento texto`](Projetos/3%20sentimento%20texto) | A resenha é positiva ou negativa — e qual baseline barato vale usar? | Modelo NB + artefato de inferência |
 | 4 | [`marketing`](Projetos/4%20marketing) | A variante B converte de verdade mais que A, ou ainda pode ser acaso? | Parecer A/B (neste case: **não migrar** orçamento) |
